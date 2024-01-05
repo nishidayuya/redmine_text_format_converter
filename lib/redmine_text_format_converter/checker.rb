@@ -8,7 +8,7 @@ module RedmineTextFormatConverter
       invalid_attributes = []
       TEXT_ATTRIBUTES.each do |klass, text_attribute_name|
         text_getter_name = text_attribute_name
-        relation = klass.where("#{text_attribute_name} != ''")
+        relation = klass.where.not(text_attribute_name => "")
         n = relation.count
         puts("#{klass.name}##{text_attribute_name} #{n} rows:")
         display_progress_bar("checking", n) do |progress|
