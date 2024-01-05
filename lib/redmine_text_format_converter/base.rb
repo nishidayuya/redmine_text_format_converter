@@ -9,7 +9,7 @@ module RedmineTextFormatConverter
     private
 
     TEXT_ATTRIBUTES = [
-      [Comment, :comments],
+      [Comment, :content],
       [Document, :description],
       [Issue, :description],
       [Journal, :notes],

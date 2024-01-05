@@ -22,7 +22,7 @@ module RedmineTextFormatConverter
 
     PANDOC_COMMAND = "#{PANDOC_PATH} -f textile" +
       " -t markdown+fenced_code_blocks+lists_without_preceding_blankline" +
-      " --atx-header"
+      " --markdown-headings=atx"
 
     def capture2(*command, **options)
       stdout, status = *Open3.capture2(*command, options)
@@ -45,19 +45,18 @@ module RedmineTextFormatConverter
     end
 
     def convert_setting_welcome_text
-      Setting.find_all_by_name("welcome_text").each do |setting|
-        original_text = setting.value
-        converted_text = pandoc(original_text)
-        setting.value = converted_text
-        disable_record_timestamps(setting)
-        setting.save!
-      end
+      setting = Setting.where(name: :welcome_text).first!
+      original_text = setting.value
+      converted_text = pandoc(original_text)
+      setting.value = converted_text
+      disable_record_timestamps(setting)
+      setting.save!
     end
 
     def convert_text_attribute(klass, text_attribute_name)
       text_getter_name = text_attribute_name
       text_setter_name = "#{text_getter_name}=".to_sym
-      relation = klass.where("#{text_attribute_name} != ''")
+      relation = klass.where.not(text_attribute_name => "")
       n = relation.count
       puts("#{klass.name}##{text_attribute_name} #{n} rows:")
       display_progress_bar("converting", n) do |progress|
