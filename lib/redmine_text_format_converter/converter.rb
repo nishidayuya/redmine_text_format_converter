@@ -22,7 +22,7 @@ module RedmineTextFormatConverter
 
     PANDOC_COMMAND = "#{PANDOC_PATH} -f textile" +
       " -t markdown+fenced_code_blocks+lists_without_preceding_blankline" +
-      " --atx-header"
+      " --markdown-headings=atx"
 
     def capture2(*command, **options)
       stdout, status = *Open3.capture2(*command, options)
